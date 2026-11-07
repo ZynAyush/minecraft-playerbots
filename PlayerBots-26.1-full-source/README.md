@@ -1,18 +1,18 @@
-# PlayerBots 1.0.0
+# Carpet Fake Players — Minecraft 26.1
 
-Server-side fake players for Paper and Purpur 26.1.
+Version-specific source project for Carpet Fake Players on Paper and Purpur 26.1.x.
+
+For project features, installation notes and current releases, see the [Modrinth project](https://modrinth.com/plugin/carpetfakeplayer) and the [repository overview](../README.md).
 
 ## Build
 
 Requires JDK 25 and an internet connection for the first Paperweight setup.
 
-```text
+```bash
 ./gradlew.bat clean build
 ```
 
-Output:
-
-`build/libs/PlayerBots-26.1-1.0.0.jar`
+The resulting plugin JAR is written to `build/libs/` (artifact name: `PlayerBots-26.1-1.0.0.jar`).
 
 ## Commands
 
@@ -35,132 +35,18 @@ Output:
 /bot reload
 ```
 
-`single` is the default. Repeating actions run on the server tick loop.
+`single` is the default action mode. Repeating actions run on the server tick loop. If a normal player owns exactly one active bot, bot-control commands can target it without a name. With multiple owned bots, specify the name.
 
-## Bot targeting
+## Permissions and ownership
 
-When a normal player owns exactly one active bot, bot-control commands automatically target that bot, so the bot name can be omitted. For example:
+The plugin declares `bot.*`, `bot.admin`, `bot.player`, `bot.action`, `bot.mine`, `bot.kill-other`, `bot.original`, `bot.original.grant`, `bot.reload`, `bot.rejoin`, and `bot.use`. Ownership is enforced separately from command permission checks: a bot is controlled by its owner, an operator, or an administrator with `bot.admin`. Administrative actions such as mining and managing another player's bot require the relevant administrative permission.
 
-```text
-/bot attack single
-/bot hotbar 4
-/bot offhand clear
-/bot drop
-/bot sneak
-/bot skin <player>
-```
+## Integrations and behavior
 
-When the player owns two or more active bots, the bot name is required so the command is unambiguous. Operators/admins still need to specify another player's bot by name. `/bot kill_other <name>` always requires an explicit name.
-
-## What it does
-
-- Real `ServerPlayer` backed fake players
-- Normal server-side gravity, collision and knockback
-- Inventory persistence and rejoin snapshots
-- AuthMe NPC marker bypass
-- Player skins, sneaking, hand sync and item pickup
-- Attack and use actions with single/interval/continuous modes
-- LuckPerms support for original bots
+This version includes the implementation and configuration for server-side fake players, inventory persistence and rejoin snapshots, gravity/collision/knockback handling, player skins and sneaking, attack/use actions, and the optional LuckPerms and AuthMe integrations. Review `src/main/resources/config.yml` for configurable behavior.
 
 ## Compatibility
 
-Built specifically for Minecraft/Paper 26.1.x. Do not mix this JAR with another PlayerBots version target.
+This source folder targets Minecraft/Paper 26.1.x. Use the build produced by this folder for the matching target; do not substitute a JAR built for another Minecraft target. Purpur is treated as a Paper-based compatibility target. Folia and non-Paper server implementations are not claimed as supported.
 
-The NMS code is kept under `com.example.bot.nms` so version-specific changes stay in one place.
-
-Build note: the fake connection uses Netty ChannelFutureListener, matching the 26.x Connection API for this target.
-
-## Compatibility notes
-
-PlayerBots keeps fake players out of normal vanilla player persistence and supplies a local connection address for plugins that expect a real player socket. Bot-owned quit cleanup also skips the known SunLight/NightCore NPC-unsafe quit handlers while leaving other quit integrations enabled.
-
-Compatibility fix: RegisteredListener uses the Bukkit plugin package.
-
-### Fake connection compatibility
-
-The 26.1 build uses an in-memory Netty channel without opening a fake socket. The channel is marked as a PLAY connection and swallows synthetic channel exceptions so packet/protocol plugins do not produce repeated EmbeddedChannel errors for bots.
-
-
-## Permissions
-
-`bot.*` grants all PlayerBots permissions. `bot.player` grants normal player controls and `bot.action` grants action controls. Bot ownership is still enforced: only the owner, an OP, or an administrator with `bot.admin` can control a given bot.
-
-To deny all PlayerBots permissions to the default group with LuckPerms:
-
-```text
-/lp group default permission set bot.* false
-```
-
-### Fake connection cleanup
-The in-memory connection acknowledges close/disconnect requests without closing its transport. This avoids repeated `StacklessClosedChannelException` warnings during fake-player removal when packet plugins perform cleanup.
-
-### Channel cleanup fix
-The in-memory bot channel now ignores close/disconnect operations and is not finished during bot removal. This prevents packet/network compatibility plugins from repeatedly surfacing `StacklessClosedChannelException` during fake-player cleanup.
-
-
-## Action hunger
-
-Attack and use actions can be configured independently with `hunger.attack` and `hunger.use`. When disabled, the action restores the exhaustion value it had before the action, so normal food effects are still allowed.
-
-## Offhand
-
-Use `/bot offhand [name] <0-35>` to swap an inventory slot with the bot's offhand. `/bot offhand [name] clear` drops and clears the offhand. A lone owned bot can be targeted without `[name]`.
-
-
-### LuckPerms prefix handling
-Bots can optionally suppress inherited LuckPerms prefixes with `luckperms.hide-prefix: true`.
-
-## Bot Ownership
-
-Every spawned bot stores the UUID of its owner. A bot can only be controlled by:
-
-- its owner;
-- a server operator (OP); or
-- an administrator with the `bot.admin` permission.
-
-Having `bot.use`, `bot.player`, `bot.action`, `bot.mine`, or another normal command permission does **not** allow a player to control somebody else's bot. Knowing the bot's name is not enough.
-
-`/bot kill_other <name>` and `/bot kill all` are operator/admin-only.
-
-## Mining
-
-`/bot mine` is an admin-only action. Normal players can mine through `/bot use` when the configured use fallback is enabled.
-
-```text
-/bot mine [name]
-/bot mine [name] single
-/bot mine [name] continuously
-/bot mine [name] interval <ticks>
-/bot mine [name] stop
-```
-
-Mining uses the server-side block break path and keeps the normal block protection, drops, durability and event checks.
-
-## Sneak
-
-Sneak is a toggle when no state is supplied:
-
-```text
-/bot sneak [name]
-```
-
-Run it again to toggle the state back off. `on` and `off` can still be supplied explicitly.
-
-## LuckPerms Prefix
-
-When enabled, PlayerBots applies a high-priority bot prefix so inherited group prefixes do not override the configured bot prefix.
-
-## Access control
-
-Normal players can only control bots they own. Administrative permissions are required for other-player bot management and `/bot mine`.
-
-`/bot sneak [name]` is a toggle when no state is supplied: run it once to enable sneak and again to disable it.
-
-`/bot use [name]` keeps normal use/interaction behavior and can fall back to real server-side block mining when `use.mine-fallback` is enabled.
-
-Bots can use the configured custom PlayerBots prefix instead of an inherited LuckPerms group prefix.
-
-## Rejoin behavior
-
- `/bot rejoin` restores your only available bot when you own one saved rejoin record. `/bot rejoin <name>` targets a specific saved bot. Rejoin recreates the bot like a normal spawn, then restores its saved inventory, held slot, world, XYZ position, and yaw/pitch. The saved location is re-applied one tick after login so join-handling plugins cannot leave the bot at their own teleport location.
-
+The version-specific NMS implementation is under `src/main/java/com/example/bot/nms/`.

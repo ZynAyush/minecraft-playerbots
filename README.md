@@ -1,110 +1,76 @@
-# PlayerBots
+# Carpet Fake Players
 
-PlayerBots is a server-side fake player plugin for Paper and Purpur.
+[![Minecraft](https://img.shields.io/badge/Minecraft-26.1.x%20%7C%2026.2%20%7C%2026.3-2ea44f)](https://modrinth.com/plugin/carpetfakeplayer)
+[![Platforms](https://img.shields.io/badge/platform-Paper%20%7C%20Purpur-blue)](https://modrinth.com/plugin/carpetfakeplayer)
+[![Java](https://img.shields.io/badge/Java-25-orange)](https://adoptium.net/)
 
-It lets you spawn and control fake players that can interact with the world, hold items, attack, use items, sneak, collide with players, preserve inventory, and rejoin at their previous location.
+**Carpet Fake Players** is a server-side fake-player plugin for **Paper and Purpur**. It lets server owners spawn and control fake players with player ownership, configurable limits, combat and item-use actions, persistent inventories, custom skins, sneaking, collision, gravity, knockback and rejoining.
 
-## Supported Versions
+- **Modrinth:** https://modrinth.com/plugin/carpetfakeplayer
+- **Source:** https://github.com/ZynAyush/minecraft-playerbots
 
-| Minecraft | Server Software | Java |
+> This repository currently contains separate source projects for Minecraft 26.1.x, 26.2 and 26.3. Download or build the project that matches your server version.
+
+## Compatibility
+
+| Minecraft version | Supported server software | Java |
 |---|---|---|
 | 26.1.x | Paper / Purpur | 25 |
 | 26.2 | Paper / Purpur | 25 |
 | 26.3 | Paper / Purpur | 25 |
 
-Use the build that matches your Minecraft version.
+**Do not use a build made for a different Minecraft version.** These builds use version-specific server internals. Spigot, Bukkit standalone, Folia and other platforms are not listed as supported.
 
 ## Features
 
-- Fake player bots
-- Player-owned bots
-- Configurable bot limits
-- Persistent bot data
-- Persistent bot inventory
-- Inventory restoration after bot deaths/removal
-- Bot rejoining
-- Rejoin at the bot's last saved location
-- Saved world, position, yaw and pitch
-- Combat and attack actions
-- Item-use actions
-- Single action mode
-- Interval action mode
-- Continuous action mode
-- Main-hand support
-- Offhand support
-- Sneaking
-- Entity collision
-- Player skins
-- Gravity
-- Natural movement physics
-- Natural knockback
-- Explosion knockback
-- Configurable hunger/exhaustion behavior
-- AuthMe compatibility
-- LuckPerms support
-- Original/admin bots
-- Configurable attributes
-- Configurable messages
-- Owner-based bot access control
+- **Server-side fake players:** Spawn and manage fake players directly on your server.
+- **Player ownership:** Players control their own bots, with configurable per-player limits.
+- **Persistent data and inventory:** Preserve bot inventories and data according to the configuration, including across supported removal, death and rejoin flows.
+- **Combat actions:** Run a single attack, continuous attacks or attacks at a tick interval.
+- **Item use:** Trigger a single use action, continuous use or interval-based use.
+- **Inventory controls:** Select hotbar slots, manage offhand items, and drop an item, stack or inventory.
+- **Custom skins:** Apply a skin using a player name.
+- **Player-like movement:** Gravity, collision, natural knockback and explosion knockback.
+- **Sneaking:** Toggle sneaking for individual bots.
+- **Rejoining:** Recreate saved bots after they leave or are removed, restoring saved data according to configuration.
+- **Original bots:** Create administrator-managed bots and grant or revoke access to original-bot management.
+- **Integrations:** AuthMe compatibility and LuckPerms support.
+- **Configuration:** Configure bot limits, attributes, hunger/exhaustion, persistence, physics, messages and other behavior in `config.yml`.
+
+## Installation
+
+1. Open the [Modrinth project page](https://modrinth.com/plugin/carpetfakeplayer).
+2. Download the file matching your exact Minecraft version.
+3. Stop your Paper or Purpur server.
+4. Place the downloaded JAR in the server's `plugins/` directory.
+5. Start the server.
+6. Review the generated `plugins/PlayerBots/config.yml` and adjust it for your server.
+
+Use only the build matching the server's Minecraft version.
 
 ## Commands
 
-### Bot Management
+The main command is `/bot`.
 
-Bot names are optional when the player owns **exactly one normal bot**.
-
-For example:
+### Bot management
 
 ```text
-/bot spawn
-/bot kill
-/bot rejoin
-/bot info
-/bot hotbar 4
-/bot offhand 12
-/bot offhand clear
-/bot drop
-/bot dropstack
-/bot dropinv
-/bot sneak
-/bot skin Steve
-```
-
-When the player owns multiple bots, the bot name must be specified:
-
-```text
-/bot info BOT_Test
-/bot hotbar BOT_Test 4
-/bot offhand BOT_Test 12
-/bot offhand BOT_Test clear
-/bot drop BOT_Test
-/bot dropstack BOT_Test
-/bot dropinv BOT_Test
-/bot sneak BOT_Test
-/bot skin BOT_Test Steve
-```
-
-This prevents ambiguity when a player has more than one bot.
-
-Other management commands:
-
-```text
+/bot spawn [name]
+/bot kill [name|all]
+/bot rejoin [name]
+/bot info <name>
+/bot hotbar <name> <0-8>
+/bot offhand <name> <0-35>
+/bot offhand <name> clear
+/bot drop <name>
+/bot dropstack <name>
+/bot dropinv <name>
+/bot sneak <name> on|off
+/bot skin <name> <player>
 /bot reload
 ```
 
-### Attack
-
-Attack commands support three modes:
-
-```text
-/bot attack
-/bot attack single
-/bot attack continuously
-/bot attack interval <ticks>
-/bot attack stop
-```
-
-When the player owns multiple bots:
+### Combat
 
 ```text
 /bot attack <name>
@@ -114,31 +80,7 @@ When the player owns multiple bots:
 /bot attack <name> stop
 ```
 
-`single` is the default mode.
-
-Example:
-
-```text
-/bot attack BOT_Test
-/bot attack BOT_Test single
-/bot attack BOT_Test continuously
-/bot attack BOT_Test interval 20
-/bot attack BOT_Test stop
-```
-
-### Item Use
-
-Item-use commands support three modes:
-
-```text
-/bot use
-/bot use single
-/bot use continuously
-/bot use interval <ticks>
-/bot use stop
-```
-
-When the player owns multiple bots:
+### Item usage
 
 ```text
 /bot use <name>
@@ -148,87 +90,7 @@ When the player owns multiple bots:
 /bot use <name> stop
 ```
 
-`single` is the default mode.
-
-Example:
-
-```text
-/bot use BOT_Test
-/bot use BOT_Test single
-/bot use BOT_Test continuously
-/bot use BOT_Test interval 20
-/bot use BOT_Test stop
-```
-
-### Mining
-
-Mining controls are restricted to administrators.
-
-```text
-/bot mine <name>
-```
-
-Depending on the configured command behavior, the bot can perform mining/use interactions through the server-side fake-player system.
-
-### Other Bot Actions
-
-```text
-/bot drop
-/bot dropstack
-/bot dropinv
-/bot hotbar <slot>
-/bot offhand <slot>
-/bot offhand clear
-/bot sneak
-/bot skin <player>
-```
-
-When the player owns multiple bots, specify the bot name before the action arguments.
-
-## Bot Ownership and Access Control
-
-Bots are player-owned.
-
-A normal player can control **only bots they own**.
-
-A bot can be controlled by:
-
-- The bot's owner
-- A server operator (OP)
-- A PlayerBots administrator
-
-PlayerBots administrators use:
-
-```text
-bot.admin
-```
-
-Having general PlayerBots permissions does **not** allow a player to control another player's bot.
-
-For example, giving:
-
-```text
-bot.player
-bot.action
-bot.use
-```
-
-does not give a player permission to control somebody else's bot.
-
-Ownership checks are performed directly by PlayerBots.
-
-## Administrative Commands
-
-Commands that affect other players' bots are restricted to operators or administrators.
-
-Examples include:
-
-```text
-/bot kill_other <name>
-/bot kill all
-```
-
-Administrative/original bot management:
+### Original bots
 
 ```text
 /bot original spawn <name>
@@ -236,396 +98,98 @@ Administrative/original bot management:
 /bot original revoke <player>
 ```
 
-## Implicit Bot Targeting
-
-PlayerBots supports automatic bot targeting.
-
-If a player owns exactly **one normal bot**, the bot name can be omitted from supported commands.
-
-Example:
-
-```text
-/bot attack
-```
-
-automatically targets the player's only bot.
-
-Likewise:
-
-```text
-/bot use
-/bot rejoin
-/bot kill
-/bot drop
-/bot dropinv
-/bot sneak
-```
-
-target that bot when there is only one.
-
-If the player owns two or more bots, the name must be supplied.
-
-Example:
-
-```text
-/bot attack BOT_A
-/bot attack BOT_B
-```
-
-This prevents commands from affecting the wrong bot.
-
-## Rejoining Bots
-
-`/bot rejoin` recreates a bot that was removed or disconnected while restoring its saved bot data.
-
-The bot is rejoined using the same spawning system as `/bot spawn`, but its last saved location is restored afterward.
-
-The saved location includes:
-
-```text
-World
-X
-Y
-Z
-Yaw
-Pitch
-```
-
-Example:
-
-```text
-/bot rejoin
-```
-
-for a player with one bot, or:
-
-```text
-/bot rejoin BOT_Test
-```
-
-when the player owns multiple bots.
-
-The bot is restored at its last known location rather than at the owner's current location.
-
-Saved inventory and other persistent bot data are restored as part of the rejoin process.
-
-## Inventory
-
-Bot inventory can be preserved when inventory preservation is enabled.
-
-Preservation can apply when using:
-
-```text
-/bot kill
-/bot kill_other <name>
-```
-
-and can also apply to normal bot deaths.
-
-Saved bot inventory is restored when the bot is spawned or rejoined again.
-
-## Offhand
-
-Bots have a normal main hand and offhand.
-
-Move an inventory slot into the offhand:
-
-```text
-/bot offhand <slot>
-```
-
-where `<slot>` is:
-
-```text
-0-35
-```
-
-Clear the offhand:
-
-```text
-/bot offhand clear
-```
-
-When multiple bots are owned:
-
-```text
-/bot offhand <name> <slot>
-/bot offhand <name> clear
-```
-
-## Sneaking
-
-Sneaking can be toggled for a bot:
-
-```text
-/bot sneak
-```
-
-or, with multiple owned bots:
-
-```text
-/bot sneak <name>
-```
-
-Each use toggles the bot's sneaking state.
-
-## Hunger and Saturation
-
-Attack and item-use exhaustion can be controlled separately.
-
-Example:
-
-```yml
-hunger:
-  attack: true
-  use: true
-```
-
-Set either value to `false` to disable exhaustion caused by that action.
-
-## AuthMe
-
-PlayerBots includes AuthMe compatibility for fake players.
-
-Fake-player connections are handled specially so authentication-related plugins can coexist with PlayerBots.
-
-## LuckPerms
-
-PlayerBots supports LuckPerms.
-
-Broad permission groups are available:
-
-```text
-bot.*
-bot.player
-bot.action
-```
-
-### `bot.*`
-
-Grants all PlayerBots permissions.
-
-### `bot.player`
-
-Grants normal bot-control permissions.
-
-### `bot.action`
-
-Grants attack and item-use permissions.
-
-Individual permissions are also available:
-
-```text
-bot.admin
-bot.kill-other
-bot.original
-bot.original.grant
-bot.reload
-bot.rejoin
-bot.use
-```
-
-Example:
-
-```text
-/lp group default permission set bot.* false
-```
-
-Grant access again:
-
-```text
-/lp group default permission set bot.* true
-```
-
-Permission nodes do not override bot ownership restrictions for normal players.
-
-## Original Bots
-
-Original bots are intended for administrative or permanent bot use.
-
-Commands:
-
-```text
-/bot original spawn <name>
-/bot original grant <player>
-/bot original revoke <player>
-```
-
-Original bots can have different persistence/ownership behavior from normal player-owned bots depending on configuration.
-
-## Default Bot Name
-
-When `/bot spawn` is used without a custom name, PlayerBots creates:
-
-```text
-BOT_<player-name>
-```
-
-Example:
-
-```text
-BOT_Steve
-```
-
-## Bot Limits
-
-The maximum number of normal bots a player can own can be configured in:
-
-```text
-plugins/PlayerBots/config.yml
-```
-
-The configured limit prevents players from creating unlimited bots.
-
-## Owner Timeout
-
-Player-owned bots can be automatically removed when their owner leaves the server.
-
-The owner timeout is configurable in `config.yml`.
-
-Original bots can be configured to be exempt from the owner timeout.
-
-## Physics
-
-Bots use server-side entity physics.
-
-This includes:
-
-- Gravity
-- Falling
-- Collision
-- Knockback
-- Explosion knockback
-- Normal entity movement
-
-PlayerBots avoids continuously forcing the bot's position or velocity so normal server physics can operate.
-
-## Skins
-
-Bots can use another player's skin.
-
-For a single owned bot:
-
-```text
-/bot skin Steve
-```
-
-For multiple owned bots:
-
-```text
-/bot skin BOT_Test Steve
-```
+For the complete command syntax and version-specific notes, see the README inside the relevant source folder.
+
+## Permissions
+
+The plugin declares these permission nodes:
+
+| Permission | Purpose |
+|---|---|
+| `bot.*` | Grants all PlayerBots permissions |
+| `bot.admin` | Administrative controls |
+| `bot.player` | Normal controls for owned bots |
+| `bot.action` | Attack and item-use controls |
+| `bot.use` | Normal bot-control commands for owned bots |
+| `bot.rejoin` | Rejoin saved bots |
+| `bot.kill-other` | Remove another player's bot |
+| `bot.original` | Create/manage original bots |
+| `bot.original.grant` | Grant or revoke original-bot access |
+| `bot.reload` | Reload plugin configuration |
+| `bot.mine` | Use the administrator-only mining action |
+
+The exact defaults and permission inheritance are defined in each version's `plugin.yml`. Bot ownership checks remain enforced by the plugin: ordinary command permissions do not automatically allow a player to control another player's bot.
 
 ## Configuration
 
-Configuration is stored in:
+Configuration is generated at:
 
 ```text
 plugins/PlayerBots/config.yml
 ```
 
-Available configuration areas include:
+The shipped configuration includes settings for:
 
-- Bot limits
-- Owner timeout
-- Owner warnings
-- Physics
-- Attributes
-- Knockback
-- Hunger
-- Inventory preservation
-- Collision
-- AuthMe
-- Messages
+- Global and per-player bot limits
+- Default spawn name, game mode and entity attributes
+- Gravity, collision, knockback and item pickup
+- Inventory and experience behavior on death
+- Attack and item-use reach and hunger exhaustion
+- Autosaving and persistent rejoin snapshots
+- Owner-offline timeout and warnings
+- Join, leave and advancement messages
+- AuthMe compatibility
+- LuckPerms prefix handling
+- Plugin messages and debug logging
 
-## Installation
+Some settings require a server restart. Check the comments in the generated configuration for the exact behavior of each option.
 
-1. Download the PlayerBots build matching your Minecraft version.
-2. Stop your server.
-3. Put the JAR into the `plugins` folder.
-4. Start the server.
-5. Edit `plugins/PlayerBots/config.yml` if needed.
+## Building from source
 
-Use only the build matching your Minecraft version.
+Each supported Minecraft version has its own Gradle project.
 
-## Building
+| Version | Source directory |
+|---|---|
+| 26.1.x | [PlayerBots-26.1-full-source](PlayerBots-26.1-full-source/) |
+| 26.2 | [PlayerBots-26.2-full-source](PlayerBots-26.2-full-source/) |
+| 26.3 | [PlayerBots-26.3-full-source](PlayerBots-26.3-full-source/) |
 
-Each Minecraft version has its own Gradle project.
+Requirements: **JDK 25** and an internet connection for the initial Gradle/Paperweight dependency setup.
 
-Enter the desired version folder and run:
+From the relevant version directory, run:
 
+**Windows**
 ```bat
-.\gradlew.bat clean build
+gradlew.bat clean build
 ```
 
-Example:
-
-```bat
-cd 26.2
-.\gradlew.bat clean build
+**Linux / macOS**
+```bash
+./gradlew clean build
 ```
 
-The compiled JAR will be placed in:
+The compiled JAR is written to that project's `build/libs/` directory. Build each Minecraft version separately.
 
-```text
-build/libs/
-```
-
-Build each Minecraft version separately.
-
-## Source Structure
-
-```text
-PlayerBots/
-├── 26.1/
-│   ├── build.gradle
-│   ├── gradle.properties
-│   ├── gradlew
-│   ├── gradlew.bat
-│   ├── settings.gradle
-│   ├── README.md
-│   └── src/
-│
-├── 26.2/
-│   ├── build.gradle
-│   ├── gradle.properties
-│   ├── gradlew
-│   ├── gradlew.bat
-│   ├── settings.gradle
-│   ├── README.md
-│   └── src/
-│
-├── 26.3/
-│   ├── build.gradle
-│   ├── gradle.properties
-│   ├── gradlew
-│   ├── gradlew.bat
-│   ├── settings.gradle
-│   ├── README.md
-│   └── src/
-│
-├── LICENSE
-└── README.md
-```
-
-## Reporting Issues
+## Troubleshooting and bug reports
 
 When reporting an issue, include:
 
-```text
-Minecraft version:
-Server software and version:
-Java version:
-PlayerBots version:
-Relevant plugins:
-Full console error:
-Steps to reproduce:
-```
+- Minecraft version
+- Paper or Purpur version
+- Java version
+- Plugin build/version
+- Other plugins relevant to the issue
+- Full console error or stack trace
+- Steps to reproduce the problem
 
-Please include the complete stack trace whenever possible.
+Please report issues through the repository's [GitHub Issues](https://github.com/ZynAyush/minecraft-playerbots/issues).
 
 ## License
 
-PlayerBots is released under the MIT License.
+See [LICENSE](LICENSE) for the license included with this source repository.
 
-See [LICENSE](https://github.com/ZynAyush/minecraft-playerbots/blob/main/LICENSE) for the full license text.
+## Links
+
+- [Download Carpet Fake Players on Modrinth](https://modrinth.com/plugin/carpetfakeplayer)
+- [GitHub source repository](https://github.com/ZynAyush/minecraft-playerbots)
+- [Report a bug](https://github.com/ZynAyush/minecraft-playerbots/issues)

@@ -1,8 +1,8 @@
-name: PlayerBots
+name: Carpet Fake Players
 version: '${version}'
 main: com.example.bot.BotPlugin
 api-version: '26.2'
-description: Server-side fake-player bots for Paper/Purpur 26.2.
+description: Server-side fake players for Paper and Purpur 26.2.
 softdepend: [LuckPerms, AuthMe]
 
 commands:
@@ -12,7 +12,7 @@ commands:
 
 permissions:
   bot.*:
-    description: Grants every PlayerBots permission.
+    description: Grants every Carpet Fake Players permission.
     default: false
     children:
       bot.admin: true
@@ -27,7 +27,7 @@ permissions:
       bot.mine: true
 
   bot.admin:
-    description: Grants all PlayerBots controls and administrative commands.
+    description: Grants all Carpet Fake Players controls and administrative commands.
     default: op
     children:
       bot.player: true
@@ -39,14 +39,14 @@ permissions:
       bot.mine: true
 
   bot.player:
-    description: Grants normal PlayerBots controls for owned bots.
+    description: Grants normal controls for bots owned by the player.
     default: false
     children:
       bot.use: true
       bot.rejoin: true
 
   bot.action:
-    description: Grants PlayerBots attack and use controls for owned bots.
+    description: Grants attack and use controls for owned bots.
     default: false
     children:
       bot.use: true
@@ -76,5 +76,5 @@ permissions:
     default: false
 
   bot.use:
-    description: Allows normal PlayerBots commands for owned bots.
+    description: Allows normal commands for bots owned by the player.
     default: false

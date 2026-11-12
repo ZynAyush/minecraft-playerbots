@@ -1,56 +1,47 @@
 # Carpet Fake Players
 
-[![Minecraft](https://img.shields.io/badge/Minecraft-26.1.x%20%7C%2026.2%20%7C%2026.3-2ea44f)](https://modrinth.com/plugin/carpetfakeplayer)
-[![Platforms](https://img.shields.io/badge/platform-Paper%20%7C%20Purpur-blue)](https://modrinth.com/plugin/carpetfakeplayer)
-[![Java](https://img.shields.io/badge/Java-25-orange)](https://adoptium.net/)
+Carpet Fake Players is a Paper and Purpur plugin for spawning and managing server-side fake players. Players can manage their own bots when given the right permissions; server operators keep the administrative controls.
 
-**Carpet Fake Players** is a server-side fake-player plugin for **Paper and Purpur**. It lets server owners spawn and control fake players with player ownership, configurable limits, combat and item-use actions, persistent inventories, custom skins, sneaking, collision, gravity, knockback and rejoining.
+**Downloads:** [Modrinth](https://modrinth.com/plugin/carpetfakeplayer)  
+**Source:** https://github.com/ZynAyush/carpet-fake-players  
+**Platforms:** Paper and Purpur  
+**Java:** 25
 
-- **Modrinth:** https://modrinth.com/plugin/carpetfakeplayer
-- **Source:** https://github.com/ZynAyush/minecraft-playerbots
+## Supported versions
 
-> This repository currently contains separate source projects for Minecraft 26.1.x, 26.2 and 26.3. Download or build the project that matches your server version.
-
-## Compatibility
-
-| Minecraft version | Supported server software | Java |
+| Minecraft | Server | Java |
 |---|---|---|
 | 26.1.x | Paper / Purpur | 25 |
 | 26.2 | Paper / Purpur | 25 |
 | 26.3 | Paper / Purpur | 25 |
 
-**Do not use a build made for a different Minecraft version.** These builds use version-specific server internals. Spigot, Bukkit standalone, Folia and other platforms are not listed as supported.
+The builds use version-specific server internals. Install the JAR that matches the server's Minecraft version. Spigot, standalone Bukkit and Folia are not listed as supported.
 
-## Features
+## What it can do
 
-- **Server-side fake players:** Spawn and manage fake players directly on your server.
-- **Player ownership:** Players control their own bots, with configurable per-player limits.
-- **Persistent data and inventory:** Preserve bot inventories and data according to the configuration, including across supported removal, death and rejoin flows.
-- **Combat actions:** Run a single attack, continuous attacks or attacks at a tick interval.
-- **Item use:** Trigger a single use action, continuous use or interval-based use.
-- **Inventory controls:** Select hotbar slots, manage offhand items, and drop an item, stack or inventory.
-- **Custom skins:** Apply a skin using a player name.
-- **Player-like movement:** Gravity, collision, natural knockback and explosion knockback.
-- **Sneaking:** Toggle sneaking for individual bots.
-- **Rejoining:** Recreate saved bots after they leave or are removed, restoring saved data according to configuration.
-- **Original bots:** Create administrator-managed bots and grant or revoke access to original-bot management.
-- **Integrations:** AuthMe compatibility and LuckPerms support.
-- **Configuration:** Configure bot limits, attributes, hunger/exhaustion, persistence, physics, messages and other behavior in `config.yml`.
+- Spawn fake players and assign ownership.
+- Set global and per-player bot limits.
+- Save bot inventories and restore saved bots where the configured rejoin rules allow it.
+- Control a bot's hotbar, offhand, equipment and sneaking state.
+- Run single, continuous or interval-based attack and item-use actions.
+- Apply skins by player name.
+- Configure gravity, collision, knockback and item pickup.
+- Manage administrator-owned original bots.
+- Integrate with LuckPerms and AuthMe.
 
-## Installation
+## Install
 
-1. Open the [Modrinth project page](https://modrinth.com/plugin/carpetfakeplayer).
-2. Download the file matching your exact Minecraft version.
-3. Stop your Paper or Purpur server.
-4. Place the downloaded JAR in the server's `plugins/` directory.
-5. Start the server.
-6. Review the generated `plugins/PlayerBots/config.yml` and adjust it for your server.
+1. Open the [Modrinth page](https://modrinth.com/plugin/carpetfakeplayer).
+2. Download the release for the exact Minecraft version on your server.
+3. Stop the Paper or Purpur server.
+4. Put the JAR in `plugins/` and start the server again.
+5. Review `plugins/Carpet Fake Players/config.yml` before opening the feature to players.
 
-Use only the build matching the server's Minecraft version.
+Back up the server before changing plugins or configuration. Test major changes on a staging server when possible.
 
 ## Commands
 
-The main command is `/bot`.
+The command root is `/bot`.
 
 ### Bot management
 
@@ -80,7 +71,7 @@ The main command is `/bot`.
 /bot attack <name> stop
 ```
 
-### Item usage
+### Item use
 
 ```text
 /bot use <name>
@@ -98,98 +89,42 @@ The main command is `/bot`.
 /bot original revoke <player>
 ```
 
-For the complete command syntax and version-specific notes, see the README inside the relevant source folder.
+The version folders contain their own command notes. Check the matching README if a command differs between game versions.
 
 ## Permissions
 
-The plugin declares these permission nodes:
-
 | Permission | Purpose |
 |---|---|
-| `bot.*` | Grants all PlayerBots permissions |
+| `bot.*` | All plugin permissions |
 | `bot.admin` | Administrative controls |
-| `bot.player` | Normal controls for owned bots |
-| `bot.action` | Attack and item-use controls |
-| `bot.use` | Normal bot-control commands for owned bots |
+| `bot.player` | Controls for bots the player owns |
+| `bot.action` | Attack and item-use actions |
+| `bot.use` | Standard controls for owned bots |
 | `bot.rejoin` | Rejoin saved bots |
 | `bot.kill-other` | Remove another player's bot |
-| `bot.original` | Create/manage original bots |
+| `bot.original` | Manage original bots |
 | `bot.original.grant` | Grant or revoke original-bot access |
-| `bot.reload` | Reload plugin configuration |
-| `bot.mine` | Use the administrator-only mining action |
+| `bot.reload` | Reload configuration |
+| `bot.mine` | Administrator-only mining action |
 
-The exact defaults and permission inheritance are defined in each version's `plugin.yml`. Bot ownership checks remain enforced by the plugin: ordinary command permissions do not automatically allow a player to control another player's bot.
+Ownership checks are separate from command permissions. A player with a general command permission cannot automatically control someone else's bot.
 
-## Configuration
+## Build from source
 
-Configuration is generated at:
+Each Minecraft target has a separate Gradle project:
 
-```text
-plugins/PlayerBots/config.yml
-```
-
-The shipped configuration includes settings for:
-
-- Global and per-player bot limits
-- Default spawn name, game mode and entity attributes
-- Gravity, collision, knockback and item pickup
-- Inventory and experience behavior on death
-- Attack and item-use reach and hunger exhaustion
-- Autosaving and persistent rejoin snapshots
-- Owner-offline timeout and warnings
-- Join, leave and advancement messages
-- AuthMe compatibility
-- LuckPerms prefix handling
-- Plugin messages and debug logging
-
-Some settings require a server restart. Check the comments in the generated configuration for the exact behavior of each option.
-
-## Building from source
-
-Each supported Minecraft version has its own Gradle project.
-
-| Version | Source directory |
+| Minecraft | Source folder |
 |---|---|
-| 26.1.x | [PlayerBots-26.1-full-source](PlayerBots-26.1-full-source/) |
-| 26.2 | [PlayerBots-26.2-full-source](PlayerBots-26.2-full-source/) |
-| 26.3 | [PlayerBots-26.3-full-source](PlayerBots-26.3-full-source/) |
+| 26.1.x | `Carpet-Fake-Players-26.1-source/` |
+| 26.2 | `Carpet-Fake-Players-26.2-source/` |
+| 26.3 | `Carpet-Fake-Players-26.3-source/` |
 
-Requirements: **JDK 25** and an internet connection for the initial Gradle/Paperweight dependency setup.
+Use JDK 25. From the folder for your target version, run `gradlew.bat clean build` on Windows or `./gradlew clean build` on Linux/macOS. The JAR is written to `build/libs/`.
 
-From the relevant version directory, run:
+## Bug reports
 
-**Windows**
-```bat
-gradlew.bat clean build
-```
-
-**Linux / macOS**
-```bash
-./gradlew clean build
-```
-
-The compiled JAR is written to that project's `build/libs/` directory. Build each Minecraft version separately.
-
-## Troubleshooting and bug reports
-
-When reporting an issue, include:
-
-- Minecraft version
-- Paper or Purpur version
-- Java version
-- Plugin build/version
-- Other plugins relevant to the issue
-- Full console error or stack trace
-- Steps to reproduce the problem
-
-Please report issues through the repository's [GitHub Issues](https://github.com/ZynAyush/minecraft-playerbots/issues).
+Open an issue in this repository and include the Minecraft version, Paper/Purpur build, Java version, plugin version, relevant configuration, related plugins and a full error log. Remove server addresses, tokens and other private information before posting.
 
 ## License
 
-See [LICENSE](LICENSE) for the license included with this source repository.
-
-## Links
-
-- [Download Carpet Fake Players on Modrinth](https://modrinth.com/plugin/carpetfakeplayer)
-- [GitHub source repository](https://github.com/ZynAyush/minecraft-playerbots)
-- [Report a bug](https://github.com/ZynAyush/minecraft-playerbots/issues)
+See [LICENSE](LICENSE) for the terms that apply to this source repository.
